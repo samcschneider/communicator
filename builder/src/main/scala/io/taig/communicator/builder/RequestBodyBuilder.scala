@@ -15,9 +15,9 @@ case class RequestBodyBuilder(
     content: Content
 ) extends Builder[OkHttpRequestBody] {
   override def build: OkHttpRequestBody = content match {
-    case Content.Text(value) ⇒ create(contentType, value)
-    case Content.Bytes(value) ⇒ create(contentType, value)
-    case Content.Reference(file) ⇒ create(contentType, file)
+    case Content.Text(value) => create(contentType, value)
+    case Content.Bytes(value) => create(contentType, value)
+    case Content.Reference(file) => create(contentType, file)
   }
 }
 

@@ -19,7 +19,7 @@ final class Request private (val wrapped: OkHttpRequest,
     * @tparam T
     * @return Task that parses the response body
     */
-  def parse[T: Parser]: Task[Response[T]] = task.map { response ⇒
+  def parse[T: Parser]: Task[Response[T]] = task.map { response =>
     Response(response.wrapped, Parser[T].parse(response.wrapped))
   }
 
@@ -32,7 +32,7 @@ final class Request private (val wrapped: OkHttpRequest,
     *
     * @return Task that ignores the response body
     */
-  def ignoreBody: Task[Response[Unit]] = task.map { response ⇒
+  def ignoreBody: Task[Response[Unit]] = task.map { response =>
     response.wrapped.close()
     response
   }
@@ -54,24 +54,24 @@ object Request {
     request.ignoreBody
 
   def apply(request: OkHttpRequest)(implicit ohc: OkHttpClient): Request = {
-    val task = Task.create[Response[Unit]] { (scheduler, callback) ⇒
+    val task = Task.create[Response[Unit]] { (scheduler, callback) =>
       val call = ohc.newCall(request)
 
       var canceled = false
 
-      scheduler.execute { () ⇒
+      scheduler.execute { () =>
         try {
           val response = call.execute()
           callback.onSuccess(Response.raw(response))
         } catch {
-          case exception: Throwable ⇒
+          case exception: Throwable =>
             if (!canceled && exception.getMessage != "Canceled") {
               callback.onError(exception)
             }
         }
       }
 
-      Cancelable { () ⇒
+      Cancelable { () =>
         canceled = true
         callback.onError(new IOException("Canceled"))
         call.cancel()

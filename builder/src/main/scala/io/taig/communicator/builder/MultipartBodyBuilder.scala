@@ -19,7 +19,7 @@ case class MultipartBodyBuilder(
     val builder = new OkHttpMultipartBodyBuilder(boundary)
       .setType(contentType)
 
-    parts.toList.foreach { part ⇒
+    parts.toList.foreach { part =>
       builder.addPart(part.build)
     }
 

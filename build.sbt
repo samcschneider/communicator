@@ -1,12 +1,12 @@
 lazy val root = project
   .in(file("."))
-  .enablePlugins(TutPlugin)
+  //.enablePlugins(TutPlugin)
   .settings(Settings.common)
   .settings(
-    aggregate in tut := false,
+//    aggregate in tut := false,
     autoScalaLibrary := false,
     description := "A monix wrapper for OkHttp",
-    fork in tut := true,
+    //fork in tut := true,
     name := "communicator",
     managedSources := Seq.empty,
     normalizedName := name.value,
@@ -18,7 +18,7 @@ lazy val root = project
     publishMavenStyle := true,
     sources in Compile := Seq.empty,
     startYear := Some(2013),
-    tutTargetDirectory := file(".")
+    //tutTargetDirectory := file(".")
   )
   .aggregate(builder, request)
   .dependsOn(builder, request)

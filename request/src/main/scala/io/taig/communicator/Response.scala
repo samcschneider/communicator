@@ -2,7 +2,7 @@ package io.taig.communicator
 
 import okhttp3._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 sealed trait Response[T] {
   def wrapped: OkHttpResponse

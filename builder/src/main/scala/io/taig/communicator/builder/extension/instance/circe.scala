@@ -2,14 +2,12 @@ package io.taig.communicator.builder.extension.instance
 
 import java.io.File
 
-import cats.syntax.either._
 import io.circe.syntax._
 import io.circe.{Decoder, DecodingFailure, Encoder, Json}
 import io.taig.communicator.OkHttpRequestBody
 import io.taig.communicator.builder._
 import okhttp3.{Headers, HttpUrl, MediaType}
-
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait circe {
   implicit val decoderFile: Decoder[File] = Decoder[String].map(new File(_))
@@ -21,14 +19,14 @@ trait circe {
     for {
       data <- Decoder[Map[String, List[String]]]
       headers = data.foldLeft(new Headers.Builder) {
-        case (builder, (key, values)) ⇒
+        case (builder, (key, values)) =>
           values.foldLeft(builder)(_.add(key, _))
       }
     } yield headers.build()
 
   implicit val encoderHeaders: Encoder[Headers] =
     Encoder[Map[String, List[String]]]
-      .contramap(_.toMultimap.asScala.toMap.mapValues(_.asScala.toList))
+      .contramap(_.toMultimap.asScala.toMap.view.mapValues(_.asScala.toList).toMap )
 
   implicit val decoderHttpUrl: Decoder[HttpUrl] =
     Decoder[String].map(HttpUrl.parse)
@@ -44,26 +42,26 @@ trait circe {
 
   implicit val decoderBuilderOkHttpRequestBody
     : Decoder[Builder[OkHttpRequestBody]] =
-    Decoder.instance[Builder[OkHttpRequestBody]] { cursor ⇒
+    Decoder.instance[Builder[OkHttpRequestBody]] { cursor =>
       cursor.get[Int]("type").flatMap {
-        case 0 ⇒ cursor.get[RequestBodyBuilder]("body")
-        case 1 ⇒ cursor.get[MultipartBodyBuilder]("body")
-        case tpe ⇒ Left(DecodingFailure(s"Unknown type $tpe", cursor.history))
+        case 0 => cursor.get[RequestBodyBuilder]("body")
+        case 1 => cursor.get[MultipartBodyBuilder]("body")
+        case tpe => Left(DecodingFailure(s"Unknown type $tpe", cursor.history))
       }
     }
 
   implicit val encoderBuilderOkHttpRequestBody
     : Encoder[Builder[OkHttpRequestBody]] =
     Encoder.instance[Builder[OkHttpRequestBody]] {
-      case request: RequestBodyBuilder ⇒
+      case request: RequestBodyBuilder =>
         Json.obj(
-          "type" → 0.asJson,
-          "body" → request.asJson
+          "type" -> 0.asJson,
+          "body" -> request.asJson
         )
-      case multipart: MultipartBodyBuilder ⇒
+      case multipart: MultipartBodyBuilder =>
         Json.obj(
-          "type" → 1.asJson,
-          "body" → multipart.asJson
+          "type" -> 1.asJson,
+          "body" -> multipart.asJson
         )
     }
 }

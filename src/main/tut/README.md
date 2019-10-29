@@ -1,4 +1,5 @@
 # Communicator
+# TODO: convert to https://github.com/scalameta/mdoc -- https://scalameta.org/mdoc/docs/installation.html
 
 [![CircleCI](https://circleci.com/gh/Taig/communicator/tree/master.svg?style=shield)](https://circleci.com/gh/Taig/communicator/tree/master)
 [![codecov](https://codecov.io/gh/Taig/communicator/branch/master/graph/badge.svg)](https://codecov.io/gh/Taig/communicator)

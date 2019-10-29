@@ -8,8 +8,10 @@ object Settings {
 
     val Scala212 = "2.12.6"
 
+    val Scala213 = "2.13.1"
+    
     val common = Def.settings(
-        crossScalaVersions := Scala211 :: Scala212 :: Nil,
+        crossScalaVersions := Scala211 :: Scala212 :: Scala213 :: Nil,
         githubProject := "communicator",
         javacOptions ++= {
             scalaVersion.value match {
@@ -26,13 +28,11 @@ object Settings {
             "-deprecation" ::
             "-feature" ::
             "-Xfatal-warnings" ::
-            "-Xexperimental" ::
             "-Ywarn-dead-code" ::
-            "-Ywarn-infer-any" ::
             "-Ywarn-numeric-widen" ::
             "-Ywarn-value-discard" ::
             Nil,
-        scalaVersion := Scala212,
+        scalaVersion := Scala213,
         testOptions in Test += Tests.Argument( "-oFD" )
     )
 }

@@ -22,7 +22,7 @@ case class RequestBuilder(
     body: Option[Builder[OkHttpRequestBody]] = None
 ) extends Builder[OkHttpRequest] {
   def addHeader(key: String, value: String): RequestBuilder =
-    copy(headers = headers + (key → value))
+    copy(headers = headers + (key -> value))
 
   def removeHeader(key: String): RequestBuilder = copy(headers = headers - key)
 
@@ -57,7 +57,7 @@ case class RequestBuilder(
       .method(method.name, body.map(_.build).orNull)
 
     headers.foreach {
-      case (key, value) ⇒ builder.addHeader(key, value)
+      case (key, value) => builder.addHeader(key, value)
     }
 
     builder.build()

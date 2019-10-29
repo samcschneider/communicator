@@ -13,12 +13,12 @@ import okhttp3.ResponseBody
 trait Parser[T] {
   def parse(response: OkHttpResponse): T
 
-  def map[U](f: T ⇒ U): Parser[U] = Parser.instance { response ⇒
+  def map[U](f: T => U): Parser[U] = Parser.instance { response =>
     f(parse(response))
   }
 
-  def mapResponse[U](f: (OkHttpResponse, T) ⇒ U): Parser[U] =
-    Parser.instance { response ⇒
+  def mapResponse[U](f: (OkHttpResponse, T) => U): Parser[U] =
+    Parser.instance { response =>
       f(response, parse(response))
     }
 }
@@ -26,12 +26,12 @@ trait Parser[T] {
 object Parser {
   def apply[T: Parser]: Parser[T] = implicitly[Parser[T]]
 
-  def instance[T](f: OkHttpResponse ⇒ T): Parser[T] =
+  def instance[T](f: OkHttpResponse => T): Parser[T] =
     new Parser[T] {
       override def parse(response: OkHttpResponse) = f(response)
     }
 
-  implicit val parserByteArray: Parser[Array[Byte]] = instance { response ⇒
+  implicit val parserByteArray: Parser[Array[Byte]] = instance { response =>
     val body = response.body
 
     try {
