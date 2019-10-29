@@ -7,7 +7,9 @@ import monix.execution.{Scheduler, UncaughtExceptionReporter}
 import okhttp3.OkHttpClient
 import okhttp3.Request.Builder
 import okhttp3.mockwebserver.MockWebServer
-import org.scalatest.{Assertion, AsyncFlatSpec, Matchers}
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.Assertion
 
 import scala.concurrent.Future
 import scala.language.implicitConversions
@@ -20,9 +22,9 @@ trait Suite extends AsyncFlatSpec with Matchers {
     * already explicitly logging socket failures.
     */
   implicit val scheduler =
-    Scheduler.fixedPool("test", 5, reporter = UncaughtExceptionReporter(_ ⇒ {}))
+    Scheduler.fixedPool("test", 5, reporter = UncaughtExceptionReporter(_ => {}))
 
-  def http[U](f: MockWebServer ⇒ U): Builder = {
+  def http[U](f: MockWebServer => U): Builder = {
     val server = new MockWebServer
     f(server)
     server.start()
@@ -30,7 +32,7 @@ trait Suite extends AsyncFlatSpec with Matchers {
   }
 
   implicit def taskToFuture(task: Task[Assertion]): Future[Assertion] =
-    task.runAsync
+    task.runToFuture
 
   LogManager.getLogManager.reset()
 }
